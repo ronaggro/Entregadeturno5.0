@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Entrega de turno</title>
+<!-- Tailwind CSS via CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- jsPDF via CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.13/jspdf.plugin.autotable.min.js"></script>
+<!-- Font Awesome for icons -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+<!-- PWA Manifest -->
+<link href="manifest.json" rel="manifest"/>
+<!-- iOS meta tags -->
+<meta content="yes" name="mobile-web-app-capable"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
+<meta content="ReporteFotos" name="apple-mobile-web-app-title"/>
+<link href="images/icon-192.png" rel="apple-touch-icon"/>
+<!-- Theme Color -->
+<meta content="#2563eb" name="theme-color"/>
+<link href="style.css" rel="stylesheet"/>
+<link href="images/icon-180.png" rel="apple-touch-icon" sizes="180x180"/></head>
+<body class="bg-gray-100 font-sans">
+<!-- Encabezado -->
+<header class="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-4 shadow-lg sticky top-0 z-10 flex justify-between items-center">
+<h1 class="text-center text-xl font-bold flex-grow">Entrega de turno</h1>
+<button class="text-white text-2xl focus:outline-none" id="hamburger-button">
+<i class="fas fa-bars"></i>
+</button>
+<div class="dropdown-menu hidden" id="dropdown-menu">
+<button id="menu-export"><i class="fas fa-file-export mr-2"></i> Exportar</button>
+<button id="menu-share"><i class="fas fa-share-alt mr-2"></i> Compartir</button>
+<button id="menu-dark-mode"><i class="fas fa-moon mr-2"></i> Modo Oscuro</button>
+<button class="hidden" id="menu-install-app"><i class="fas fa-download mr-2"></i> Instalar App</button>
+</div>
+</header>
+<main class="container mx-auto p-6 mt-6 bg-white rounded-lg shadow-xl">
+<!-- Navegación de Pestañas -->
+<nav class="bg-gray-50 p-4 rounded-t-lg shadow-inner flex flex-wrap justify-center gap-2 sm:gap-4 mb-6 border-b border-gray-200 glass-subtle">
+<button class="tab-button px-5 py-2.5 rounded-full text-gray-600 hover:bg-blue-50 hover:text-blue-700 transition-all duration-300 font-medium text-sm focus:outline-none focus:ring-2 focus:ring-blue-300" id="tab-general-data">Datos Generales</button>
+<button class="tab-button px-5 py-2.5 rounded-full text-gray-600 hover:bg-blue-50 hover:text-blue-700 transition-all duration-300 font-medium text-sm focus:outline-none focus:ring-2 focus:ring-blue-300" id="tab-inventory">Inventario</button>
+<button class="tab-button px-5 py-2.5 rounded-full text-gray-600 hover:bg-blue-50 hover:text-blue-700 transition-all duration-300 font-medium text-sm focus:outline-none focus:ring-2 focus:ring-blue-300" id="tab-observations">Observaciones</button>
+<button class="tab-button px-5 py-2.5 rounded-full text-gray-600 hover:bg-blue-50 hover:text-blue-700 transition-all duration-300 font-medium text-sm focus:outline-none focus:ring-2 focus:ring-blue-300" id="tab-requests">Solicitudes</button>
+<button class="tab-button px-5 py-2.5 rounded-full text-gray-600 hover:bg-blue-50 hover:text-blue-700 transition-all duration-300 font-medium text-sm focus:outline-none focus:ring-2 focus:ring-blue-300" id="tab-faena-status">Estado Faena</button>
+<button class="tab-button px-5 py-2.5 rounded-full text-gray-600 hover:bg-blue-50 hover:text-blue-700 transition-all duration-300 font-medium text-sm focus:outline-none focus:ring-2 focus:ring-blue-300" id="tab-photos">Fotos</button>
+</nav>
+<!-- Contenido de las Secciones -->
+<div id="content">
+<!-- Sección Datos Generales -->
+<section class="tab-content hidden" id="general-data-section">
+<h2 class="text-2xl font-bold mb-6 text-gray-800">Datos Generales de la Entrega de Turno</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div>
+<label class="block text-sm font-medium text-gray-700" for="fecha-ingreso">Fecha Ingreso:</label>
+<input class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" id="fecha-ingreso" type="date"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700" for="fecha-salida">Fecha Salida:</label>
+<input class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" id="fecha-salida" type="date"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700" for="nombre">Nombre:</label>
+<input class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" id="nombre" type="text"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700" for="area">Área:</label>
+<input class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" id="area" type="text"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700" for="centro">Centro:</label>
+<input class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" id="centro" type="text"/>
+</div>
+</div>
+</section>
+<!-- Sección Inventario de Equipos, Herramientas e Insumos -->
+<section class="tab-content hidden" id="inventory-section">
+<h2 class="text-2xl font-bold mb-6 text-gray-800">Inventario de Equipos, Herramientas e Insumos</h2>
+<div class="space-y-4" id="inventory-items">
+<div class="bg-white p-6 rounded-lg shadow-md">
+<h3 class="font-semibold mb-2">ROVs</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+<div>
+<label class="block text-sm font-medium text-gray-700" for="rovs-quantity">Cantidad:</label>
+<input class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" id="rovs-quantity" min="0" type="number" value="0"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700" for="rovs-detail">Detalle:</label>
+<textarea class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" id="rovs-detail" placeholder="Detalle de ROVs (ej. ROV Saga, ROV Dante)..." rows="3"></textarea>
+</div>
+</div>
+</div>
+<div class="bg-white p-6 rounded-lg shadow-md">
+<h3 class="font-semibold mb-2">Consolas</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+<div>
+<label class="block text-sm font-medium text-gray-700" for="consoles-quantity">Cantidad:</label>
+<input class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" id="consoles-quantity" min="0" type="number" value="0"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700" for="consoles-detail">Detalle:</label>
+<textarea class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" id="consoles-detail" placeholder="Detalle de Consolas..." rows="3"></textarea>
+</div>
+</div>
+</div>
+<div class="bg-white p-6 rounded-lg shadow-md">
+<h3 class="font-semibold mb-2">Memorias</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+<div>
+<label class="block text-sm font-medium text-gray-700" for="memories-quantity">Cantidad:</label>
+<input class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" id="memories-quantity" min="0" type="number" value="0"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700" for="memories-detail">Detalle:</label>
+<textarea class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" id="memories-detail" placeholder="Detalle de Memorias..." rows="3"></textarea>
+</div>
+</div>
+</div>
+<div class="bg-white p-6 rounded-lg shadow-md">
+<h3 class="font-semibold mb-2">Otros</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+<div>
+<label class="block text-sm font-medium text-gray-700" for="others-quantity">Cantidad:</label>
+<input class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" id="others-quantity" min="0" type="number" value="0"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700" for="others-detail">Detalle:</label>
+<textarea class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" id="others-detail" placeholder="Otros equipos, herramientas e insumos..." rows="3"></textarea>
+</div>
+</div>
+</div>
+<div class="bg-white p-6 rounded-lg shadow-md">
+<h3 class="font-semibold mb-2">NOTEBOOK</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+<div>
+<label class="block text-sm font-medium text-gray-700" for="notebook-quantity">Cantidad:</label>
+<input class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" id="notebook-quantity" min="0" type="number" value="0"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700" for="notebook-detail">Detalle:</label>
+<textarea class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" id="notebook-detail" placeholder="Detalle de Notebook..." rows="3"></textarea>
+</div>
+</div>
+</div>
+<div class="bg-white p-6 rounded-lg shadow-md">
+<h3 class="font-semibold mb-2">GPS</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+<div>
+<label class="block text-sm font-medium text-gray-700" for="gps-quantity">Cantidad:</label>
+<input class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" id="gps-quantity" min="0" type="number" value="0"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700" for="gps-detail">Detalle:</label>
+<textarea class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" id="gps-detail" placeholder="Detalle de GPS..." rows="3"></textarea>
+</div>
+</div>
+</div>
+<div class="bg-white p-6 rounded-lg shadow-md">
+<h3 class="font-semibold mb-2">CABLES ROV</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+<div>
+<label class="block text-sm font-medium text-gray-700" for="cables-rov-quantity">Cantidad:</label>
+<input class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" id="cables-rov-quantity" min="0" type="number" value="0"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700" for="cables-rov-detail">Detalle:</label>
+<textarea class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" id="cables-rov-detail" placeholder="Detalle de Cables ROV..." rows="3"></textarea>
+</div>
+</div>
+</div>
+<div class="bg-white p-6 rounded-lg shadow-md">
+<h3 class="font-semibold mb-2">EEE</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+<div>
+<label class="block text-sm font-medium text-gray-700" for="eee-quantity">Cantidad:</label>
+<input class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" id="eee-quantity" min="0" type="number" value="0"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700" for="eee-detail">Detalle:</label>
+<textarea class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" id="eee-detail" placeholder="Detalle de EEE..." rows="3"></textarea>
+</div>
+</div>
+</div>
+<div class="bg-white p-6 rounded-lg shadow-md">
+<h3 class="font-semibold mb-2">HIDROLAVADORAS</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+<div>
+<label class="block text-sm font-medium text-gray-700" for="hidrolavadoras-quantity">Cantidad:</label>
+<input class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" id="hidrolavadoras-quantity" min="0" type="number" value="0"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700" for="hidrolavadoras-detail">Detalle:</label>
+<textarea class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" id="hidrolavadoras-detail" placeholder="Detalle de Hidrolavadoras..." rows="3"></textarea>
+</div>
+</div>
+</div>
+<div class="bg-white p-6 rounded-lg shadow-md">
+<h3 class="font-semibold mb-2">GENERADOR</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+<div>
+<label class="block text-sm font-medium text-gray-700" for="generador-quantity">Cantidad:</label>
+<input class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" id="generador-quantity" min="0" type="number" value="0"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700" for="generador-detail">Detalle:</label>
+<textarea class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" id="generador-detail" placeholder="Detalle de Generador..." rows="3"></textarea>
+</div>
+</div>
+</div>
+<div class="bg-white p-6 rounded-lg shadow-md">
+<h3 class="font-semibold mb-2">DVR</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+<div>
+<label class="block text-sm font-medium text-gray-700" for="dvr-quantity">Cantidad:</label>
+<input class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" id="dvr-quantity" min="0" type="number" value="0"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700" for="dvr-detail">Detalle:</label>
+<textarea class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" id="dvr-detail" placeholder="Detalle de DVR..." rows="3"></textarea>
+</div>
+</div>
+</div>
+<div class="bg-white p-6 rounded-lg shadow-md">
+<h3 class="font-semibold mb-2">EXTENSIÓN ELÉCTRICA</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+<div>
+<label class="block text-sm font-medium text-gray-700" for="extension-electrica-quantity">Cantidad:</label>
+<input class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" id="extension-electrica-quantity" min="0" type="number" value="0"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700" for="extension-electrica-detail">Detalle:</label>
+<textarea class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" id="extension-electrica-detail" placeholder="Detalle de Extensión Eléctrica..." rows="3"></textarea>
+</div>
+</div>
+</div>
+<div class="bg-white p-6 rounded-lg shadow-md">
+<h3 class="font-semibold mb-2">CAJA DE HERRAMIENTAS</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+<div>
+<label class="block text-sm font-medium text-gray-700" for="caja-herramientas-quantity">Cantidad:</label>
+<input class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" id="caja-herramientas-quantity" min="0" type="number" value="0"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700" for="caja-herramientas-detail">Detalle:</label>
+<textarea class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" id="caja-herramientas-detail" placeholder="Detalle de Caja de Herramientas..." rows="3"></textarea>
+</div>
+</div>
+</div>
+<div class="bg-white p-6 rounded-lg shadow-md">
+<h3 class="font-semibold mb-2">BIDONES DE BENCINA</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+<div>
+<label class="block text-sm font-medium text-gray-700" for="bidones-bencina-quantity">Cantidad:</label>
+<input class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" id="bidones-bencina-quantity" min="0" type="number" value="0"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700" for="bidones-bencina-detail">Detalle:</label>
+<textarea class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" id="bidones-bencina-detail" placeholder="Detalle de Bidones de Bencina..." rows="3"></textarea>
+</div>
+</div>
+</div>
+<div class="bg-white p-6 rounded-lg shadow-md">
+<h3 class="font-semibold mb-2">DIFUSOR</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+<div>
+<label class="block text-sm font-medium text-gray-700" for="difusor-quantity">Cantidad:</label>
+<input class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" id="difusor-quantity" min="0" type="number" value="0"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700" for="difusor-detail">Detalle:</label>
+<textarea class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" id="difusor-detail" placeholder="Detalle de Difusor..." rows="3"></textarea>
+</div>
+</div>
+</div>
+<div class="bg-white p-6 rounded-lg shadow-md">
+<h3 class="font-semibold mb-2">MANGUERA HIDROLAVADORA</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+<div>
+<label class="block text-sm font-medium text-gray-700" for="manguera-hidrolavadora-quantity">Cantidad:</label>
+<input class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" id="manguera-hidrolavadora-quantity" min="0" type="number" value="0"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700" for="manguera-hidrolavadora-detail">Detalle:</label>
+<textarea class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" id="manguera-hidrolavadora-detail" placeholder="Detalle de Manguera Hidrolavadora..." rows="3"></textarea>
+</div>
+</div>
+</div>
+<div class="bg-white p-6 rounded-lg shadow-md">
+<h3 class="font-semibold mb-2">TRINEO</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+<div>
+<label class="block text-sm font-medium text-gray-700" for="trineo-quantity">Cantidad:</label>
+<input class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" id="trineo-quantity" min="0" type="number" value="0"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700" for="trineo-detail">Detalle:</label>
+<textarea class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" id="trineo-detail" placeholder="Detalle de Trineo..." rows="3"></textarea>
+</div>
+</div>
+</div>
+<div class="bg-white p-6 rounded-lg shadow-md">
+<h3 class="font-semibold mb-2">ESTANQUE</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+<div>
+<label class="block text-sm font-medium text-gray-700" for="estanque-quantity">Cantidad:</label>
+<input class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" id="estanque-quantity" min="0" type="number" value="0"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700" for="estanque-detail">Detalle:</label>
+<textarea class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" id="estanque-detail" placeholder="Detalle de Estanque..." rows="3"></textarea>
+</div>
+</div>
+</div>
+<div class="bg-white p-6 rounded-lg shadow-md">
+<h3 class="font-semibold mb-2">MANGUERA CORRUGADA</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+<div>
+<label class="block text-sm font-medium text-gray-700" for="manguera-corrugada-quantity">Cantidad:</label>
+<input class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" id="manguera-corrugada-quantity" min="0" type="number" value="0"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700" for="manguera-corrugada-detail">Detalle:</label>
+<textarea class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" id="manguera-corrugada-detail" placeholder="Detalle de Manguera Corrugada..." rows="3"></textarea>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Sección Observaciones -->
+<section class="tab-content hidden" id="observations-section">
+<h2 class="text-2xl font-bold mb-6 text-gray-800">Observaciones</h2>
+<textarea class="w-full h-64 border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200" id="observations-text" placeholder="Escribe aquí las observaciones sobre el estado de los equipos y coordinaciones..."></textarea>
+</section>
+<!-- Sección Solicitudes al Taller -->
+<section class="tab-content hidden" id="requests-section">
+<h2 class="text-2xl font-bold mb-6 text-gray-800">Solicitudes al Taller</h2>
+<div class="bg-white p-6 rounded-lg shadow-md" id="requests-table">
+<div class="grid grid-cols-2 gap-4 font-semibold border-b pb-2 mb-2">
+<div>Objeto</div>
+<div>Cantidad</div>
+</div>
+<!-- Las solicitudes se añadirán dinámicamente aquí -->
+<button class="mt-2 bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-3 rounded text-sm btn-glass" id="add-request-row">Añadir Fila</button>
+</div>
+<div class="mt-4">
+<label class="block text-sm font-medium text-gray-700" for="requests-note">Nota:</label>
+<textarea class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" id="requests-note" placeholder="Escribe aquí cualquier nota aclaratoria sobre las solicitudes..." rows="3"></textarea>
+</div>
+</section>
+<!-- Sección Estado de Faena en Centro NINUHALAC 2 -->
+<section class="tab-content hidden" id="faena-status-section">
+<h2 class="text-2xl font-bold mb-6 text-gray-800">Estado de Faena en Centro NINUHALAC 2</h2>
+<textarea class="w-full h-40 border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200" id="faena-status-text" placeholder="Describe el estado actual de la faena..."></textarea>
+<div class="mt-4">
+<label class="block text-sm font-medium text-gray-700" for="faena-image-description">Descripción de la Imagen de Referencia:</label>
+<textarea class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200" id="faena-image-description" placeholder="Explica los elementos visuales de la imagen..." rows="3"></textarea>
+</div>
+<div class="mt-4 flex flex-wrap gap-4">
+<label class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded cursor-pointer inline-flex items-center" for="faena-image-1-input">
+                        Seleccionar Imagen 1
+                    </label>
+<input accept="image/png, image/jpeg, image/jpg" class="hidden" id="faena-image-1-input" type="file"/>
+<div class="w-32 h-32 border border-gray-300 rounded flex items-center justify-center text-gray-500" id="faena-image-1-preview">No Image</div>
+<label class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded cursor-pointer inline-flex items-center" for="faena-image-2-input">
+                        Seleccionar Imagen 2
+                    </label>
+<input accept="image/png, image/jpeg, image/jpg" class="hidden" id="faena-image-2-input" type="file"/>
+<div class="w-32 h-32 border border-gray-300 rounded flex items-center justify-center text-gray-500" id="faena-image-2-preview">No Image</div>
+</div>
+</section>
+<!-- Sección Fotos -->
+<section class="tab-content hidden" id="photos-section">
+<h2 class="text-2xl font-bold mb-6 text-gray-800">Registro Fotográfico</h2>
+<div class="flex flex-wrap gap-2 mb-4">
+<!-- Botón real de captura (puede fallar en escritorio o sin https) -->
+<button class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded inline-flex items-center" id="capture-photo-button">
+<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path><path d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+                        Capturar Foto
+                    </button>
+<input accept="image/*" capture="environment" id="capture-input" type="file"/>
+<label class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded cursor-pointer inline-flex items-center" for="file-input">
+<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+                        Seleccionar Fotos
+                    </label>
+<input accept="image/png, image/jpeg, image/jpg" id="file-input" multiple="" type="file"/>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4" id="photo-grid">
+<!-- Las fotos se añadirán aquí dinámicamente -->
+</div>
+<p class="text-red-500 text-sm mt-2 hidden" id="photo-limit-alert">Límite de fotos alcanzado (máx. 10).</p>
+</section>
+</div>
+</main>
+<!-- Pie de Página con Botones de Acción -->
+<footer class="bg-gray-800 text-white p-4 shadow-lg fixed bottom-0 left-0 right-0 border-t border-gray-700 flex justify-center items-center">
+<p class="text-center text-sm text-green-400 mt-2" id="action-status"></p>
+<p class="text-center text-sm text-red-400 mt-2" id="action-error"></p>
+<p class="text-center text-xs text-gray-400 mt-2">Created by R. Yañez</p>
+</footer>
+<!-- Espacio para compensar el footer fijo -->
+<div class="h-20"></div>
+<script src="script.js"></script>
+<script>if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(console.error);
+  });
+}</script></body>
+</html>
