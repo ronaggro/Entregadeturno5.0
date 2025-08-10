@@ -1172,6 +1172,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     await openDatabase(); // Abrir la base de datos IndexedDB
     loadData();
     showSection('general-data-section'); // Mostrar sección de datos generales por defecto
+    wireTabs();
 
     // Cargar preferencia de modo oscuro
     const savedDarkMode = localStorage.getItem('darkMode');
@@ -1215,6 +1216,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.log('PWA was installed');
         showStatus('¡Aplicación instalada con éxito!', 3000);
     });
+    // Bind header menu actions
+    const exportBtn = document.getElementById('menu-export');
+    const shareBtn = document.getElementById('menu-share');
+    if (exportBtn) exportBtn.addEventListener('click', () => { dropdownMenu.classList.add('hidden'); exportPdf(); });
+    if (shareBtn) shareBtn.addEventListener('click', () => { dropdownMenu.classList.add('hidden'); sharePdf(); });
+
 
     // Comprobar si la app ya está instalada al cargar
     if (window.matchMedia('(display-mode: standalone)').matches || navigator.standalone) {
@@ -1255,6 +1262,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     await openDatabase(); // Abrir la base de datos IndexedDB
     loadData();
     showSection('general-data-section'); // Mostrar sección de datos generales por defecto
+    wireTabs();
 
     // Cargar preferencia de modo oscuro
     const savedDarkMode = localStorage.getItem('darkMode');
@@ -1280,3 +1288,23 @@ document.addEventListener('click', (event) => {
         dropdownMenu.classList.add('hidden');
     }
 });
+
+// --- Wire up tab navigation ---
+function wireTabs(){
+    const map = {
+        'tab-general-data':'general-data-section',
+        'tab-inventory':'inventory-section',
+        'tab-observations':'observations-section',
+        'tab-requests':'requests-section',
+        'tab-faena-status':'faena-status-section',
+        'tab-photos':'photos-section'
+    };
+    Object.keys(map).forEach(id => {
+        const btn = document.getElementById(id);
+        const section = map[id];
+        if(btn){
+            btn.addEventListener('click', () => showSection(section));
+        }
+    });
+}
+// ensure we call wireTabs on DOMContentLoaded

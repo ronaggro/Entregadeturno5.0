@@ -153,6 +153,91 @@ body.dark-mode .dropdown-menu button:hover {
 
 
 /* =======================
+   Crystal Glass Theme (Glassmorphism)
+   ======================= */
+:root{
+  --glass-bg: rgba(255,255,255,0.14);
+  --glass-border: rgba(255,255,255,0.28);
+  --glass-highlight: rgba(255,255,255,0.6);
+  --glass-shadow: rgba(2,6,23,0.35);
+  --glass-radius: 18px;
+  --glass-blur: 14px;
+  --glass-saturate: 140%;
+}
+
+.bg-gradient-crystal{
+  background:
+    radial-gradient(1200px 600px at 10% -10%, rgba(56,189,248,0.35), transparent 60%),
+    radial-gradient(900px 500px at 110% 10%, rgba(168,85,247,0.30), transparent 55%),
+    radial-gradient(800px 500px at 50% 120%, rgba(34,197,94,0.20), transparent 60%),
+    linear-gradient(120deg, #0ea5e9 0%, #1e293b 35%, #0b1020 100%);
+  background-attachment: fixed;
+}
+
+.noise-overlay{
+  pointer-events:none;position:fixed;inset:0;opacity:.06;mix-blend-mode:soft-light;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.5'/></svg>");
+  z-index:0;
+}
+
+.glass-panel{
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  border: 1px solid var(--glass-border);
+  border-top-color: var(--glass-highlight);
+  border-radius: var(--glass-radius);
+  box-shadow: 0 20px 50px var(--glass-shadow);
+}
+
+.glass-header{
+  background: rgba(15, 23, 42, 0.35);
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  border-bottom: 1px solid rgba(255,255,255,0.18);
+}
+
+.glass-subtle{
+  background: rgba(255,255,255,0.10);
+  backdrop-filter: blur(10px) saturate(140%);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+  border: 1px solid rgba(255,255,255,0.18);
+}
+
+.use-glass .bg-white{
+  background: rgba(255,255,255,0.12) !important;
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  border: 1px solid rgba(255,255,255,0.22);
+  border-radius: 18px;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.28);
+}
+
+.tab-button{
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.24);
+  border-radius: 9999px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.25), 0 6px 18px rgba(2,6,23,0.15);
+  color: #e5e7eb;
+}
+.tab-button:hover{ background: rgba(255,255,255,0.18); }
+.active-tab{
+  background: linear-gradient(180deg, rgba(255,255,255,0.65), rgba(255,255,255,0.28));
+  color: #0f172a;
+  border-color: rgba(255,255,255,0.6);
+  box-shadow: 0 10px 24px rgba(59,130,246,0.35), inset 0 1px 0 rgba(255,255,255,0.7);
+}
+
+/* dropdown glass */
+.dropdown-menu{
+  background: rgba(255,255,255,0.18);
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  border: 1px solid rgba(255,255,255,0.28);
+}
+
+
+/* =======================
    Responsive Type & Controls
    ======================= */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
@@ -164,7 +249,7 @@ body.dark-mode .dropdown-menu button:hover {
 }
 
 body{
-  font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+  font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial;
   font-size: var(--fs-m);
   line-height: 1.35;
 }
@@ -173,11 +258,9 @@ h1{ font-size: clamp(20px, 3.6vw, 28px); line-height: 1.15; }
 h2{ font-size: clamp(18px, 3.0vw, 24px); line-height: 1.2; }
 h3{ font-size: clamp(16px, 2.6vw, 20px); line-height: 1.25; }
 
-/* Buttons */
 button{ font-size: var(--fs-s); line-height: 1.1; }
 .dropdown-menu button{ font-size: var(--fs-s); }
 
-/* Tab buttons: prevent overflow and improve padding on small screens */
 .tab-button{
   display: inline-flex;
   align-items: center;
@@ -187,23 +270,16 @@ button{ font-size: var(--fs-s); line-height: 1.1; }
   padding-block: clamp(6px, 1.6vw, 10px);
   padding-inline: clamp(12px, 3vw, 20px);
   line-height: 1.15;
-  white-space: nowrap;        /* keep on one line */
+  white-space: nowrap;
   max-width: 100%;
-  overflow: hidden;           /* and clip if container is too small */
-  text-overflow: ellipsis;    /* show ellipsis */
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-
-/* Make the tab rail scrollable horizontally on very small screens */
-nav::-webkit-scrollbar{ height: 8px; }
 nav{ overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: thin; }
+nav::-webkit-scrollbar{ height: 8px; }
 
-/* Inputs & textareas */
 input[type="text"], input[type="number"], input[type="date"], textarea{
   font-size: var(--fs-s);
 }
 
-/* Utility for glassy buttons (can be added to any button) */
-.btn-glass{
-  font-size: var(--fs-s);
-  padding: .55rem .9rem;
-}
+.btn-glass{ font-size: var(--fs-s); padding: .55rem .9rem; }

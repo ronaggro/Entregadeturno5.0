@@ -8,7 +8,6 @@ const ASSETS = [
   './images/icon-180.png',
   './images/icon-192.png',
   './images/icon-512.png',
-  // CDN assets we use (will be cached as opaque responses)
   'https://cdn.tailwindcss.com',
   'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
   'https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.13/jspdf.plugin.autotable.min.js',
@@ -31,10 +30,8 @@ self.addEventListener('activate', (event) => {
   })());
 });
 
-// Strategy: Stale-While-Revalidate with navigation fallback.
 self.addEventListener('fetch', (event) => {
   const req = event.request;
-  // For navigation requests, serve index.html fallback when offline
   if (req.mode === 'navigate') {
     event.respondWith((async () => {
       try {
@@ -49,7 +46,6 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // For others: SWR
   event.respondWith((async () => {
     const cache = await caches.open(CACHE_NAME);
     const cached = await cache.match(req);
