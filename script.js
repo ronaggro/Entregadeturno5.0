@@ -78,6 +78,11 @@ const actionError = document.getElementById('action-error');
 const darkModeButton = document.getElementById('menu-dark-mode');
 const hamburgerButton = document.getElementById('hamburger-button');
 const dropdownMenu = document.getElementById('dropdown-menu');
+// Extra menu buttons
+const exportButton = document.getElementById('menu-export');
+const shareButton = document.getElementById('menu-share');
+const installButton = document.getElementById('menu-install-app');
+
 let deferredPrompt; // Variable para almacenar el evento beforeinstallprompt
 
 
@@ -1049,6 +1054,38 @@ if ('serviceWorker' in navigator) {
     });
 }
 
+
+// --- Menu actions ---
+if (exportButton) {
+    exportButton.addEventListener('click', async () => {
+        try { await exportPdf(); } catch(e){ console.error(e); }
+        dropdownMenu.classList.add('hidden');
+    });
+}
+if (shareButton) {
+    shareButton.addEventListener('click', async () => {
+        try { await sharePdf(); } catch(e){ console.error(e); }
+        dropdownMenu.classList.add('hidden');
+    });
+}
+
+// Install prompt (PWA)
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    if (installButton) installButton.classList.remove('hidden');
+});
+if (installButton) {
+    installButton.addEventListener('click', async () => {
+        if (!deferredPrompt) return;
+        deferredPrompt.prompt();
+        try { await deferredPrompt.userChoice; } catch(e){}
+        deferredPrompt = null;
+        installButton.classList.add('hidden');
+        dropdownMenu.classList.add('hidden');
+    });
+}
+
 // Event listeners para pestañas
 tabButtons.forEach(button => {
     button.addEventListener('click', () => {
@@ -1158,43 +1195,6 @@ captureInput.addEventListener('change', (event) => {
 
 
 
-
-// --- Menu wiring (Export / Share / Install) ---
-const exportMenuButton = document.getElementById('menu-export');
-const shareMenuButton = document.getElementById('menu-share');
-const installMenuButton = document.getElementById('menu-install-app');
-
-if (exportMenuButton) {
-    exportMenuButton.addEventListener('click', async (e) => {
-        e.preventDefault();
-        dropdownMenu.classList.add('hidden');
-        try { await exportPdf(); } catch (err) { console.error(err); }
-    });
-}
-if (shareMenuButton) {
-    shareMenuButton.addEventListener('click', async (e) => {
-        e.preventDefault();
-        dropdownMenu.classList.add('hidden');
-        try { await sharePdf(); } catch (err) { console.error(err); }
-    });
-}
-
-// A2HS (Add to Home Screen) handling
-window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    if (installMenuButton) installMenuButton.classList.remove('hidden');
-});
-if (installMenuButton) {
-    installMenuButton.addEventListener('click', async () => {
-        if (deferredPrompt) {
-            await deferredPrompt.prompt();
-            try { await deferredPrompt.userChoice; } catch {}
-            deferredPrompt = null;
-        }
-        dropdownMenu.classList.add('hidden');
-    });
-}
 // Función para alternar el modo oscuro
 function toggleDarkMode() {
     document.body.classList.toggle('dark-mode');
