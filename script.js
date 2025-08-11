@@ -1158,6 +1158,43 @@ captureInput.addEventListener('change', (event) => {
 
 
 
+
+// --- Menu wiring (Export / Share / Install) ---
+const exportMenuButton = document.getElementById('menu-export');
+const shareMenuButton = document.getElementById('menu-share');
+const installMenuButton = document.getElementById('menu-install-app');
+
+if (exportMenuButton) {
+    exportMenuButton.addEventListener('click', async (e) => {
+        e.preventDefault();
+        dropdownMenu.classList.add('hidden');
+        try { await exportPdf(); } catch (err) { console.error(err); }
+    });
+}
+if (shareMenuButton) {
+    shareMenuButton.addEventListener('click', async (e) => {
+        e.preventDefault();
+        dropdownMenu.classList.add('hidden');
+        try { await sharePdf(); } catch (err) { console.error(err); }
+    });
+}
+
+// A2HS (Add to Home Screen) handling
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    if (installMenuButton) installMenuButton.classList.remove('hidden');
+});
+if (installMenuButton) {
+    installMenuButton.addEventListener('click', async () => {
+        if (deferredPrompt) {
+            await deferredPrompt.prompt();
+            try { await deferredPrompt.userChoice; } catch {}
+            deferredPrompt = null;
+        }
+        dropdownMenu.classList.add('hidden');
+    });
+}
 // Función para alternar el modo oscuro
 function toggleDarkMode() {
     document.body.classList.toggle('dark-mode');
@@ -1172,7 +1209,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     await openDatabase(); // Abrir la base de datos IndexedDB
     loadData();
     showSection('general-data-section'); // Mostrar sección de datos generales por defecto
-    wireTabs();
 
     // Cargar preferencia de modo oscuro
     const savedDarkMode = localStorage.getItem('darkMode');
@@ -1216,12 +1252,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.log('PWA was installed');
         showStatus('¡Aplicación instalada con éxito!', 3000);
     });
-    // Bind header menu actions
-    const exportBtn = document.getElementById('menu-export');
-    const shareBtn = document.getElementById('menu-share');
-    if (exportBtn) exportBtn.addEventListener('click', () => { dropdownMenu.classList.add('hidden'); exportPdf(); });
-    if (shareBtn) shareBtn.addEventListener('click', () => { dropdownMenu.classList.add('hidden'); sharePdf(); });
-
 
     // Comprobar si la app ya está instalada al cargar
     if (window.matchMedia('(display-mode: standalone)').matches || navigator.standalone) {
@@ -1262,7 +1292,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     await openDatabase(); // Abrir la base de datos IndexedDB
     loadData();
     showSection('general-data-section'); // Mostrar sección de datos generales por defecto
-    wireTabs();
 
     // Cargar preferencia de modo oscuro
     const savedDarkMode = localStorage.getItem('darkMode');
@@ -1288,23 +1317,3 @@ document.addEventListener('click', (event) => {
         dropdownMenu.classList.add('hidden');
     }
 });
-
-// --- Wire up tab navigation ---
-function wireTabs(){
-    const map = {
-        'tab-general-data':'general-data-section',
-        'tab-inventory':'inventory-section',
-        'tab-observations':'observations-section',
-        'tab-requests':'requests-section',
-        'tab-faena-status':'faena-status-section',
-        'tab-photos':'photos-section'
-    };
-    Object.keys(map).forEach(id => {
-        const btn = document.getElementById(id);
-        const section = map[id];
-        if(btn){
-            btn.addEventListener('click', () => showSection(section));
-        }
-    });
-}
-// ensure we call wireTabs on DOMContentLoaded

@@ -13,20 +13,20 @@
 <!-- Font Awesome for icons -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
 <!-- PWA Manifest -->
-<link href="manifest.json?v=20250810" rel="manifest"/>
+<link href="manifest.json" rel="manifest"/>
 <!-- iOS meta tags -->
 <meta content="yes" name="mobile-web-app-capable"/>
 <meta content="yes" name="apple-mobile-web-app-capable"/>
 <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
 <meta content="ReporteFotos" name="apple-mobile-web-app-title"/>
-<link href="images/icon-192.png" rel="apple-touch-icon"/>
+<link href="images/icon-180.png" rel="apple-touch-icon" sizes="180x180"/>
 <!-- Theme Color -->
 <meta content="#2563eb" name="theme-color"/>
-<link href="style.css?v=20250810" rel="stylesheet"/>
+<link href="style.css?v=4" rel="stylesheet"/>
 </head>
-<body class="font-sans bg-gradient-crystal"><div class="noise-overlay"></div>
+<body class="bg-gray-100 font-sans">
 <!-- Encabezado -->
-<header class="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-4 shadow-lg sticky top-0 z-10 flex justify-between items-center glass-header">
+<header class="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-4 shadow-lg sticky top-0 z-10 flex justify-between items-center">
 <h1 class="text-center text-xl font-bold flex-grow">Entrega de turno</h1>
 <button class="text-white text-2xl focus:outline-none" id="hamburger-button">
 <i class="fas fa-bars"></i>
@@ -38,9 +38,9 @@
 <button class="hidden" id="menu-install-app"><i class="fas fa-download mr-2"></i> Instalar App</button>
 </div>
 </header>
-<main class="container mx-auto p-6 mt-6 bg-white rounded-lg shadow-xl glass-panel use-glass">
+<main class="container mx-auto p-6 mt-6 bg-white rounded-lg shadow-xl">
 <!-- Navegación de Pestañas -->
-<nav class="bg-gray-50 p-4 rounded-t-lg shadow-inner flex flex-wrap justify-center gap-2 sm:gap-4 mb-6 border-b border-gray-200 glass-subtle">
+<nav class="bg-gray-50 p-4 rounded-t-lg shadow-inner flex flex-wrap justify-center gap-2 sm:gap-4 mb-6 border-b border-gray-200">
 <button class="tab-button px-5 py-2.5 rounded-full text-gray-600 hover:bg-blue-50 hover:text-blue-700 transition-all duration-300 font-medium text-sm focus:outline-none focus:ring-2 focus:ring-blue-300" id="tab-general-data">Datos Generales</button>
 <button class="tab-button px-5 py-2.5 rounded-full text-gray-600 hover:bg-blue-50 hover:text-blue-700 transition-all duration-300 font-medium text-sm focus:outline-none focus:ring-2 focus:ring-blue-300" id="tab-inventory">Inventario</button>
 <button class="tab-button px-5 py-2.5 rounded-full text-gray-600 hover:bg-blue-50 hover:text-blue-700 transition-all duration-300 font-medium text-sm focus:outline-none focus:ring-2 focus:ring-blue-300" id="tab-observations">Observaciones</button>
@@ -402,6 +402,10 @@
 </footer>
 <!-- Espacio para compensar el footer fijo -->
 <div class="h-20"></div>
-<script src="script.js?v=20250810"></script>
-</body>
+<script src="script.js?v=4"></script>
+<script>if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(console.error);
+  });
+}</script></body>
 </html>

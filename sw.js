@@ -1,4 +1,4 @@
-const CACHE_NAME = 'entrega-turno-v1';
+const CACHE_NAME = 'entrega-turno-v4';
 const ASSETS = [
   './',
   './index.html',
@@ -31,26 +31,23 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  const req = event.request;
-  if (req.mode === 'navigate') {
+  const { request } = event;
+  if (request.mode === 'navigate') {
     event.respondWith((async () => {
-      try {
-        const net = await fetch(req);
-        return net;
-      } catch (err) {
+      try { return await fetch(request); }
+      catch (e) {
         const cache = await caches.open(CACHE_NAME);
         const cached = await cache.match('./index.html');
-        return cached || new Response('Offline', { status: 503, statusText: 'Offline' });
+        return cached || new Response('Offline', { status: 503 });
       }
     })());
     return;
   }
-
   event.respondWith((async () => {
     const cache = await caches.open(CACHE_NAME);
-    const cached = await cache.match(req);
-    const fetchAndUpdate = fetch(req).then((res) => {
-      try { cache.put(req, res.clone()); } catch(e) {}
+    const cached = await cache.match(request);
+    const fetchAndUpdate = fetch(request).then(res => {
+      try { cache.put(request, res.clone()); } catch (e) {}
       return res;
     }).catch(() => cached);
     return cached || fetchAndUpdate;
